@@ -5,7 +5,7 @@ const secret = 'burusitademicorazonteextraniomucho';
 async function check(token) {
     let id = null;
     try {
-        const { _id } = await jwt.decode(toke);
+        const { _id } = jwt.decode(toke);
         id = _id;
     } catch (error) {
         return false;
@@ -25,7 +25,7 @@ export default {
     },
     decode: async (token) => {
         try {
-            const { _id } = await jwt.verify(token, secret);
+            const { _id } = jwt.verify(token, secret);
             const user = await models.User.findOne({ _id, status: 1 });
             if (user)
                 return user;
