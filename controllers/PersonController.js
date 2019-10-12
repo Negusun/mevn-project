@@ -55,10 +55,10 @@ export default {
                 {
                     $or: [
                         { name: new RegExp(value, 'i') },
-                        { email: new RegExp(value, 'i') },
-                        { person_type: 'Client'}
-                    ]
-                }, { password: 0 }
+                        { email: new RegExp(value, 'i') }
+                    ],
+                    person_type: 'Client'
+                }
             )
                 .sort({ createdAt: -1 });
             res.status(200).json(reg);
@@ -76,9 +76,9 @@ export default {
                     $or: [
                         { name: new RegExp(value, 'i') },
                         { email: new RegExp(value, 'i') },
-                        { person_type: 'Provider' }
-                    ]
-                }, { password: 0 }
+                    ],
+                    person_type: 'Provider'
+                }
             )
                 .sort({ createdAt: -1 });
             res.status(200).json(reg);

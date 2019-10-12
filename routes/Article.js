@@ -6,6 +6,7 @@ const router = routerx();
 
 router.post('/add', auth.checkUserGrocer, ArticleController.add);
 router.get('/query', auth.checkUserGrocer, ArticleController.query);
+router.get('/code', auth.checkUser, ArticleController.queryCode);
 router.get('/list', auth.checkUserGrocer, ArticleController.list);
 router.put('/update', auth.checkUserGrocer, ArticleController.update);
 router.delete('/remove', auth.checkUserGrocer, ArticleController.remove);

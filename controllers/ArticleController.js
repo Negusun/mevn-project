@@ -28,6 +28,22 @@ export default {
             });
             next(error);
         }
+    },queryCode: async (req, res, next) => {
+        try {
+            const reg = await models.Article.findOne({ code: req.query.code }).populate('category',{name:1});
+            if (!reg) {
+                res.status(404).json({
+                    message: 'The resource does not exist'
+                });
+            } else {
+                res.status(200).json(reg);
+            }
+        } catch (error) {
+            res.status(500).send({
+                message: 'An error has occurred'
+            });
+            next(error);
+        }
     },
     list: async (req, res, next) => {
         try {
