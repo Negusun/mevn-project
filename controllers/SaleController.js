@@ -21,11 +21,11 @@ async function decreaseStock(article_id, amount) {
 export default {
     add: async (req, res, next) => {
         try {
-            const reg = await models.Entry.create(req.body);
+            const reg = await models.Sale.create(req.body);
 
             let detail = req.body.detail;
             detail.map(x => {
-                increaseStock(x._id, x.number)
+                decreaseStock(x._id, x.number)
             });
 
             res.status(200).json(reg);
@@ -38,7 +38,7 @@ export default {
     },
     query: async (req, res, next) => {
         try {
-            const reg = await models.Entry.findOne({ _id: req.query.id })
+            const reg = await models.Sale.findOne({ _id: req.query.id })
                 .populate('user', { name: 1 })
                 .populate('person', { name: 1 });
             if (!reg) {
@@ -58,7 +58,7 @@ export default {
     list: async (req, res, next) => {
         try {
             let value = req.query.value;
-            const reg = await models.Entry.find(
+            const reg = await models.Sale.find(
                 {
                     $or: [
                         { voucher_number: new RegExp(value, 'i') },
@@ -81,7 +81,7 @@ export default {
         try {
             let start = req.body.start;
             let end = req.body.end;
-            const reg = await models.Entry.find(
+            const reg = await models.Sale.find(
                 { 'createdAt': { '$gte': start, '$lt': end } }
             )
                 .populate('user', { name: 1 })
@@ -97,21 +97,21 @@ export default {
     },
     activate: async (req, res, next) => {
         try {
-            models.Entry.findByIdAndUpdate(
+            models.Sale.findByIdAndUpdate(
                 { _id: req.body.id },
                 { status: 1 },
                 { new: true },
-                (err, entry) => {
+                (err, sale) => {
                     if (err) {
                         res.status(500).send({
                             message: 'An error has occurred'
                         });
                     } else {
-                        let detail = entry.detail;
+                        let detail = sale.detail;
                         detail.map(x => {
-                            increaseStock(x._id, x.number)
+                            decreaseStock(x._id, x.number)
                         });
-                        res.status(200).send(entry);
+                        res.status(200).send(sale);
                     }
                 });
         } catch (error) {
@@ -123,21 +123,21 @@ export default {
     },
     deactivate: async (req, res, next) => {
         try {
-            models.Entry.findByIdAndUpdate(
+            models.Sale.findByIdAndUpdate(
                 { _id: req.body.id },
                 { status: 0 },
                 { new: true },
-                (err, entry) => {
+                (err, sale) => {
                     if (err) {
                         res.status(500).send({
                             message: 'An error has occurred'
                         });
                     } else {
-                        let detail = entry.detail;
+                        let detail = sale.detail;
                         detail.map(x => {
-                            decreaseStock(x._id, x.number)
+                            increaseStock(x._id, x.number)
                         });
-                        res.status(200).send(entry);
+                        res.status(200).send(sale);
                     }
                 });
         } catch (error) {
@@ -149,7 +149,7 @@ export default {
     },
     statistics: async (req, res, next) => {
         try {
-            const reg = await models.Entry.aggregate(
+            const reg = await models.Sale.aggregate(
                 [
                     {
                         $group: {
